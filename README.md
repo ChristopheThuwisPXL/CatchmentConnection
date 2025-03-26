@@ -1,4 +1,4 @@
-# International Research Project 2025 - CatchmentConnection
+# International Research Project 2025 - Catchment Connection
 
 
 # Getting started
