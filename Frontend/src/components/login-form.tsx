@@ -10,14 +10,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // API-aanroep voor login
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     let response;
     if (isRegistering) {
-      // Registreren - POST naar /signup van Flask backend
       response = await fetch("http://localhost:5000/signup", {
         method: "POST",
         headers: {
@@ -26,7 +24,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         body: JSON.stringify({ email, password }),
       });
     } else {
-      // Inloggen - POST naar /login van Flask backend
       response = await fetch("http://localhost:5000/login", {
         method: "POST",
         headers: {
@@ -39,13 +36,10 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
     const data = await response.json();
 
     if (response.ok) {
-      // Succesvolle login/registratie
-      alert(isRegistering ? "Check je e-mail om te bevestigen!" : "Succesvol ingelogd!");
-      // Verwerk het succes, bijvoorbeeld door een state update of redirect
-      window.location.reload();  // Vervang dit met state update voor betere UX
+      alert(isRegistering ? "Check your email for confirmation!" : "Logged in succesfully!");
+      window.location.reload();
     } else {
-      // Fout bij login of registratie
-      setError(data.error || "Er is iets mis gegaan. Probeer het opnieuw.");
+      setError(data.error || "Something went wrong, try again.");
     }
   };
 

@@ -1,15 +1,19 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; 
-import LoginPage from './pages/Login'; // Zorg ervoor dat je de juiste import hebt
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider } from "@/components/theme-provider"
+import LoginPage from './pages/Login';
+import { ModeToggle } from './components/mode-toggle'
 import './App.css';
 
 function App() {
   return (
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <ModeToggle></ModeToggle>
     <Router>
       <Routes>
-        {/* Root route die de loginpagina rendert */}
         <Route path="/" element={<LoginPage />} />
       </Routes>
     </Router>
+    </ThemeProvider>
   );
 }
 
