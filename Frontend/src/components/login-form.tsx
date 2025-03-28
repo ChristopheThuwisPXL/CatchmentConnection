@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,36 +11,51 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  // Add useNavigate for navigation after successful login/signup
+  const navigate = useNavigate();
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    let response;
-    if (isRegistering) {
-      response = await fetch("http://localhost:5000/signup", {
+    const url = isRegistering ? "http://localhost:5000/signup" : "http://localhost:5000/login"; // Switch URL based on isRegistering
+
+    try {
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-    } else {
-      response = await fetch("http://localhost:5000/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-    }
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (response.ok) {
-      alert(isRegistering ? "Check your email for confirmation!" : "Logged in succesfully!");
-      window.location.reload();
-    } else {
-      setError(data.error || "Something went wrong, try again.");
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to authenticate.");
+      }
+
+      // Handle signup success
+      if (isRegistering) {
+        alert("Signup successful! Please check your inbox and confirm your email to complete the registration process.");
+        setEmail("");  // Clear email field
+        setPassword("");  // Clear password field
+        return;  // Prevent redirect after signup, user must confirm email first
+      }
+
+      // Handle login success
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+
+      alert("Logged in successfully!");
+      navigate("/dashboard"); // Redirect to dashboard after successful login
+
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     }
   };
 

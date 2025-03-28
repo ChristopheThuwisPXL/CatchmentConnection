@@ -3,6 +3,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import LoginPage from './pages/Login';
 import { ModeToggle } from './components/mode-toggle'
 import './App.css';
+import Dashboard from './pages/dashboard';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<LoginPage />} />
+        <Route path="dashboard" element={<Dashboard/>}/>
       </Routes>
     </Router>
     </ThemeProvider>
