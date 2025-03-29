@@ -1,8 +1,16 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 100%; /* Allow root to take up full width */
+  margin: 0 auto;  /* Center the content horizontally */
+  padding: 0; /* Remove any extra padding */
   text-align: center;
+  width: 100%; /* Ensure it takes full width */
+  box-sizing: border-box; /* Include padding in width calculations */
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 0 1rem; /* Add small padding on mobile */
+  }
 }
 
 .logo {
@@ -11,9 +19,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }

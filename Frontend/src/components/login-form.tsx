@@ -11,7 +11,6 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  // Add useNavigate for navigation after successful login/signup
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -35,21 +34,18 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
         throw new Error(data.error || "Failed to authenticate.");
       }
 
-      // Handle signup success
       if (isRegistering) {
         alert("Signup successful! Please check your inbox and confirm your email to complete the registration process.");
-        setEmail("");  // Clear email field
-        setPassword("");  // Clear password field
-        return;  // Prevent redirect after signup, user must confirm email first
+        setEmail("");
+        setPassword("");
+        return;
       }
 
-      // Handle login success
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
 
       alert("Logged in successfully!");
-      navigate("/dashboard"); // Redirect to dashboard after successful login
-
+      navigate("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
