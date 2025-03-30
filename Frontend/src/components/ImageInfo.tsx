@@ -1,37 +1,38 @@
 import React, { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
+import Img1 from "@/assets/Images/dam-Haycinth.jpg";
+import Img2 from "@/assets/Images/Hartties.jpg"
+import Img3 from "@/assets/Images/hartbeespoort-1500.jpg"
+import Img4 from "@/assets/Images/pollution.jpeg"
+import Img5 from "@/assets/Images/hyacinth.jpg"
 
 const images = [
   {
-    src: "https://i.postimg.cc/g0W4qN2y/Switzerland.jpg",
-    name: "Switzerland",
-    description: "Renowned for its breathtaking Alpine scenery and precision in craftsmanship",
+    src: Img1,
+    name: "Struggles with harties dam",
+    description: "Add description",
   },
   {
-    src: "https://i.postimg.cc/DZfgR0s8/Finland.jpg",
-    name: "Finland",
-    description: "Known for its saunas, lakes, and a deep connection to nature",
+    src: Img2,
+    name: "Catchment area",
+    description: "Add description",
   },
   {
-    src: "https://i.postimg.cc/kX2jn2HS/Iceland.jpg",
-    name: "Iceland",
-    description: "Famous for its stunning geothermal landscapes, waterfalls, and glaciers",
+    src: Img3,
+    name: "Overview of the dam",
+    description: "Add description",
   },
   {
-    src: "https://i.postimg.cc/05WWRYVx/Australia.jpg",
-    name: "Australia",
-    description: "Distinguished by its diverse ecosystems, ranging from beaches to bushland",
+    src: Img4,
+    name: "Pollution issues",
+    description: "Add description",
   },
   {
-    src: "https://i.postimg.cc/dtg5DqMx/Netherland.jpg",
-    name: "Netherland",
-    description: "Characterized by its iconic canals, tulip fields, and windmills",
+    src: Img5,
+    name: "Hyacinth details",
+    description: "Add description",
   },
-  {
-    src: "https://i.postimg.cc/sDGJktB9/Ireland.jpg",
-    name: "Ireland",
-    description: "Known for its lush green landscapes and rich cultural heritage",
-  },
+  
 ];
 
 const ImageInfo: React.FC = () => {
