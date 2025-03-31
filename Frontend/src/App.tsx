@@ -4,6 +4,7 @@ import LoginPage from './pages/Login';
 //import { ModeToggle } from './components/mode-toggle'
 import './App.css';
 import Dashboard from './pages/dashboard';
+import HistoricData from './pages/historicData'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginPage />} />
         <Route path="dashboard" element={<Dashboard/>}/>
+        <Route path="historicData" element={<HistoricData/>}/>
       </Routes>
     </Router>
     
