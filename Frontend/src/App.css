@@ -50,3 +50,12 @@
 .read-the-docs {
   color: #888;
 }
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
