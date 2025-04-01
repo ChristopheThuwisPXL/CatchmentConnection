@@ -46,8 +46,7 @@
 }
 
 .main-content {
-    background-color: #f4f4f4;
-    padding: 20px;
+    background-color: #444;
 }
 
 @media (max-width: 768px) {
@@ -59,3 +58,33 @@
         height: auto;
     }
 }
+
+.header{
+    background-color:  rgb(51, 51, 51);
+    color: white;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.filter{
+    background-color: rgb(51, 51, 51);
+    color: white;
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.filterItems{
+    padding: 10%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: rgb(68, 68, 68);
+    border-radius: 5px;
+    display: flex;
+    flex-direction: center;
+    justify-content: center;
+}
+
