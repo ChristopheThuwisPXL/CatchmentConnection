@@ -7,7 +7,6 @@ interface ChartProps {
 const AreaChartComponent: React.FC<ChartProps> = ({ data }) => {
   console.log("Chart Data Received:", data);
 
-  // Ensure date is properly formatted
   const formattedData = data.map(entry => ({
     ...entry,
     date: new Date(entry.date).toLocaleDateString("en-CA"),

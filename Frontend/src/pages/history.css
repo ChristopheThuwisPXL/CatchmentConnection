@@ -16,7 +16,7 @@
     background-color: #333;
     color: white;
     padding: 20px;
-   display: block;
+    display: block;
 }
 
 .sidebar h2 {
@@ -65,26 +65,35 @@
     text-align: center;
     font-size: 24px;
     font-weight: bold;
+    width: 100%;
+    padding: 1rem;
+
 }
 
-.filter{
+.filter {
     background-color: rgb(51, 51, 51);
     color: white;
-    width: 25%;
+    width: 90%;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: center; 
+    padding-left: 10%;
 }
 
-.filterItems{
-    padding: 10%;
-    margin-top: 10px;
-    margin-bottom: 10px;
+.filterItems {
+    
     background-color: rgb(68, 68, 68);
     border-radius: 5px;
-    display: flex;
-    flex-direction: center;
-    justify-content: center;
+    box-sizing: border-box;
+    width: 110%; 
+    padding: 8px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+}
+
+label {
+    display: block; 
+    margin-bottom: 5px; 
+    width: 100%; 
 }
 

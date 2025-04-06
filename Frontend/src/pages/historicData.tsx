@@ -24,7 +24,7 @@ const HistoricData: React.FC = () => {
 
   
   if (!dummyChartData || !Array.isArray(dummyChartData)) {
-    console.error("dummyChartData is not loaded correctly!");
+    console.error("Data has not loaded correctly!");
     return <p>Error: Data not found</p>;
   }
 
@@ -53,11 +53,11 @@ const HistoricData: React.FC = () => {
         <ul>
           <li><a href="#">Dashboard</a></li>
           <li><a href="#">Live Data</a></li>
-          <li><a href="#">Historical Data</a></li>
+          <li><a href="/historicData">Historical Data</a></li>
           <li><a href="#">Settings</a></li>
         </ul>
         <div id="Filter" className="filter">
-          <label htmlFor="startDate">Start Date:</label>
+          <label htmlFor="startDate">Select Start Date:</label>
           <input 
             type="date" 
             id="startDate" 
@@ -67,7 +67,7 @@ const HistoricData: React.FC = () => {
             onChange={(e) => setStartDate(e.target.value)}
           />
 
-          <label htmlFor="endDate">End Date:</label>
+          <label htmlFor="endDate">Select End Date:</label>
           <input 
             type="date" 
             id="endDate" 
@@ -83,12 +83,13 @@ const HistoricData: React.FC = () => {
         <div id="Header" className="header">
           <h1>Historical Data</h1>
         </div>
+
         <div className="flex min-h-screen flex-col items-center justify-center px-4 md:px-8 xl:px-10">
-          <GridItem title="Line Chart">
+          <GridItem title="Hyacinth Coverage">
             {filteredData.length > 0 ? (
-              <AreaChartComponent data={filteredData} />
+                <AreaChartComponent data={filteredData} />
             ) : (
-              <p className="text-white">No data available for selected dates.</p>
+                <p className="text-white">No data available for selected dates.</p>
             )}
           </GridItem>
         </div>
