@@ -1,15 +1,17 @@
 import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
+import TeamLayout from "@/components/team-layout"
+import { SiteHeader } from "@/components/site-header"
+
 
 export default function Dashboard() {
-  const showMonthRangePicker = false;
-
+  const showMonthRangePicker = false
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader showMonthRangePicker={showMonthRangePicker} />
+      <SiteHeader showMonthRangePicker={showMonthRangePicker} />
+          <TeamLayout />
       </SidebarInset>
     </SidebarProvider>
   )
