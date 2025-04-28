@@ -12,17 +12,17 @@ const teamMembers = [
   },
   {
     name: "Calvin Nijenhuis",
-    title: "Frontend Developer",
+    title: "Software Engineer",
     imageUrl: DefaultuserImage,
     linkedIn: "https://www.linkedin.com/in/calvinnijenhuis/",
     github: "https://github.com/FreeYungHammy",
   },
   {
     name: "Trent Evans",
-    title: "Data Analyst",
+    title: "Software Engineer",
     imageUrl: DefaultuserImage,
     linkedIn: "https://www.linkedin.com/in/trent-evans/",
-    github: "https://github.com/trento123",
+    github: "https://github.com/trenti6",
   }
 ];
 
