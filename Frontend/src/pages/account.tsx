@@ -16,13 +16,13 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 export default function Account() {
-  const showMonthRangePicker = false;
+  const showYearPicker = false;
 
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader showMonthRangePicker={showMonthRangePicker} />
+        <SiteHeader showYearPicker={showYearPicker} />
         
         <div className="flex flex-col gap-6 p-8">
           <div>
@@ -31,8 +31,6 @@ export default function Account() {
               Manage your account details, security settings, and more.
             </p>
           </div>
-
-          <Separator className="my-4" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Profile Information */}

@@ -4,6 +4,7 @@ import YearPicker from "./year-filter"
 import { ThemeProvider } from "./theme-provider"
 import { ModeToggle } from "./mode-toggle"
 import { Github } from "@/components/ui/github"
+import DateTime from "@/components/ui/date-time"
 
 export function SiteHeader({ showYearPicker, onYearSelect }: { showYearPicker: boolean, onYearSelect?: (year: number) => void }) {
   return (
@@ -12,6 +13,7 @@ export function SiteHeader({ showYearPicker, onYearSelect }: { showYearPicker: b
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mx-2 data-[orientation=vertical]:h-4" />
+          <DateTime/>
           <h1 className="text-base font-medium"></h1>
           <div className="ml-auto flex items-center space-x-2">
             {showYearPicker && onYearSelect && <YearPicker onSelect={onYearSelect} />}

@@ -1,9 +1,11 @@
+import { LucideIcon } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { type LucideIcon } from "lucide-react"
-
+import {
+  Collapsible,
+} from "@/components/ui/collapsible"
 import {
   SidebarGroup,
-  SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,32 +18,41 @@ export function NavMain({
     title: string
     url: string
     icon?: LucideIcon
+    isActive?: boolean
+    items?: {
+      title: string
+      url: string
+    }[]
   }[]
+  
 }) {
   const navigate = useNavigate()
 
   const handleNavigation = (url: string) => {
     navigate(url)
   }
-
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
-        <SidebarMenu className="flex flex-col items-start">
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title} className="mb-2 mt-4 flex items-start">
-              <SidebarMenuButton
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarMenu>
+        {items.map((item) => (
+          <Collapsible
+            key={item.title}
+            asChild
+            defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+                <SidebarMenuButton 
                 tooltip={item.title}
-                className="flex items-center space-x-2"
-                onClick={() => handleNavigation(item.url)}
-              >
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
+                onClick={() => handleNavigation(item.url)}>
+                  {item.icon && <item.icon />}
+                  <span>{item.title}</span>
+                </SidebarMenuButton>
             </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
+          </Collapsible>
+        ))}
+      </SidebarMenu>
     </SidebarGroup>
   )
 }

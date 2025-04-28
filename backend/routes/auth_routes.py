@@ -16,7 +16,15 @@ def register_auth_routes(app):
     @app.route('/login', methods=['POST'])
     def login():
         data = request.get_json()
-        response = login_user(data.get('email'), data.get('password'))
+        email = data.get('email')
+        password = data.get('password')
+        if not email or not password:
+            return jsonify({"error": "Email and password are required."}), 400
+
+        try:
+            response = login_user(email, password)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
         if not response.session:
             return jsonify({"error": "Invalid email or password"}), 401

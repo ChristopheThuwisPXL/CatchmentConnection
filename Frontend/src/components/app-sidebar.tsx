@@ -1,21 +1,26 @@
 import * as React from "react"
 import {
-  BarChartIcon,
   LayoutDashboardIcon,
+  BarChartIcon,
   UsersIcon,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
+import { TeamSwitcher } from "@/components/side-bar-team"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
+// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -27,6 +32,7 @@ const data = {
       title: "Dashboard",
       url: "/dashboard",
       icon: LayoutDashboardIcon,
+      isActive: true,
     },
     {
       title: "History",
@@ -38,21 +44,21 @@ const data = {
       url: "/team",
       icon: UsersIcon,
     },
-  ]
+  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-          <div className="flex flex-col gap-0.5 text-xl font-semibold">
-            <span>CATCHMENT</span>
-            <span>CONNECTION</span>
-          </div>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <HoverCard>
+        <HoverCardTrigger>
+        <TeamSwitcher />
+        </HoverCardTrigger>
+        <HoverCardContent>
+        created and maintained by Trent Evans, Calvin Nijenhuis & Christophe Thuwis.
+        </HoverCardContent>
+        </HoverCard>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />

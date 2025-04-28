@@ -5,12 +5,12 @@ import { SiteHeader } from "@/components/site-header"
 
 
 export default function Dashboard() {
-  const showMonthRangePicker = false
+  const showYearPicker = false
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-      <SiteHeader showMonthRangePicker={showMonthRangePicker} />
+      <SiteHeader showYearPicker={showYearPicker} />
           <TeamLayout />
       </SidebarInset>
     </SidebarProvider>
