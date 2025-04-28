@@ -1,4 +1,5 @@
 "use client"
+import { useNavigate } from "react-router-dom";
 
 import {
   BellIcon,
@@ -33,6 +34,14 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
 
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    //localStorage.removeItem("token");   // example key for login token 
+    sessionStorage.clear();             // clear session 
+    navigate("/");           // redirect to login page  
+  };
+  
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -79,8 +88,8 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOutIcon />
+            <DropdownMenuItem onClick={handleLogout}>
+            <LogOutIcon className="mr-2" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
