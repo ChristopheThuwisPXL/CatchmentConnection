@@ -41,6 +41,12 @@ export function NavUser({
     sessionStorage.clear();             // clear session 
     navigate("/");           // redirect to login page  
   };
+
+  const handleRouting = (route: string) => {
+    
+    navigate(route);
+
+  }
   
   return (
     <SidebarMenu>
@@ -78,7 +84,7 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleRouting("/account")}>
                 <UserCircleIcon />
                 Account
               </DropdownMenuItem>
