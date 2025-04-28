@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import DefaultuserImage from '../assets/Images/default-user-image.png';
+import Christophe from "@/assets/Images/Christophe_Thuwis.jpg"
 
 const teamMembers = [
   {
     name: "Christophe Thuwis",
     title: "AI Engineer",
-    imageUrl: DefaultuserImage,
+    imageUrl: Christophe,
     linkedIn: "https://www.linkedin.com/in/christophe-thuwis/",
     github: "https://github.com/ChristopheThuwisPXL",
   },
