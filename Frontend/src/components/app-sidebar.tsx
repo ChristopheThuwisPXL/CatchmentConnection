@@ -19,7 +19,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { useUser } from "@/hooks/useUser";
 
 const navItems = [
   {
@@ -41,7 +40,6 @@ const navItems = [
 ];
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useUser();
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -59,9 +57,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMain items={navItems} />
       </SidebarContent>
       <SidebarFooter>
-        {user && (
-          <NavUser user={user} />
-        )}
+        <NavUser/>
       </SidebarFooter>
     </Sidebar>
   );

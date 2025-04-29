@@ -102,12 +102,13 @@ def upload_user_avatar(token, file):
             file=file_data,
             file_options={
                 "content-type": file.mimetype,
-                "x-upsert": "true"  # 🔥 YES, like this as a header!
+                "x-upsert": "true"
             }
         )
 
         if not res:
             return jsonify({"error": "Failed to upload avatar to storage"}), 500
+
         public_url = supabase.storage.from_("avatars").get_public_url(filepath)
 
         headers = {
@@ -115,9 +116,8 @@ def upload_user_avatar(token, file):
             "apikey": supabase.supabase_key,
             "Content-Type": "application/json"
         }
-
-        SUPABASE_AUTH_URL = f"{supabase.supabase_url}/auth/v1/user"
-        update_res = requests.put(SUPABASE_AUTH_URL, headers=headers, json={
+        auth_user_update_url = f"{supabase.supabase_url}/auth/v1/user"
+        update_res = requests.put(auth_user_update_url, headers=headers, json={
             "data": {
                 "avatar": public_url
             }
@@ -126,9 +126,24 @@ def upload_user_avatar(token, file):
         if update_res.status_code != 200:
             return jsonify({"error": "Failed to update user avatar metadata"}), update_res.status_code
 
+        user_res = requests.get(auth_user_update_url, headers=headers)
+        if user_res.status_code != 200:
+            return jsonify({'error': 'Failed to fetch user info'}), user_res.status_code
+        user_data = user_res.json()
+        user_id = user_data.get('id')
+
+        if not user_id:
+            return jsonify({'error': 'User ID not found'}), 400
+
+        profile_update_res = supabase.table("Profiles").update({
+            "avatar_url": public_url
+        }).eq("id", user_id).execute()
+
+        if not profile_update_res.data:
+            return jsonify({'error': 'Failed to update profile avatar'}), 400
+
         return jsonify({"avatar_url": public_url}), 200
 
     except Exception as e:
-        print(f"Error uploading avatar: {str(e)}")
-        traceback.print_exc()  # <-- print the full stack trace
+        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
