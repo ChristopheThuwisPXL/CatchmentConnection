@@ -1,16 +1,21 @@
 from flask import request, jsonify
 from services.auth_service import signup_user, login_user
+from gotrue.errors import AuthWeakPasswordError, AuthApiError
 
 def register_auth_routes(app):
     @app.route('/signup', methods=['POST'])
     def signup():
         data = request.get_json()
-        response = signup_user(data.get('email'), data.get('password'))
+        email = data.get('email')
+        password = data.get('password')
 
-        if not response.user:
-            return jsonify({"error": "Signup failed, please try again."}), 400
+        result = signup_user(email, password)
 
-        return jsonify({"message": "Signup successful. Please confirm your email."}), 200
+        if "error" in result:
+            return jsonify(result), 400
+
+        return jsonify(result), 200
+
 
 
     @app.route('/login', methods=['POST'])
@@ -18,6 +23,7 @@ def register_auth_routes(app):
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
+
         if not email or not password:
             return jsonify({"error": "Email and password are required."}), 400
 
