@@ -15,9 +15,9 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Reset error message before each submission
 
-    const url = isRegistering ? "http://localhost:5000/signup" : "http://localhost:5000/login"; // Switch URL based on isRegistering
+    const url = isRegistering ? "http://localhost:5000/signup" : "http://localhost:5000/login"; // Toggle URL
 
     try {
       const response = await fetch(url, {
@@ -35,20 +35,21 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       }
 
       if (isRegistering) {
-        alert("Signup successful! Please check your inbox and confirm your email to complete the registration process.");
-        setEmail("");
+        alert("Signup successful! Please check your inbox and confirm your email.");
+        setEmail(""); // Clear fields on successful signup
         setPassword("");
         return;
       }
 
+      // Store tokens in localStorage for session management
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
 
       alert("Logged in successfully!");
-      navigate("/dashboard");
+      navigate("/dashboard"); // Redirect to dashboard upon success
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message);
+        setError(err.message); // Display the error message
       } else {
         setError("An unexpected error occurred.");
       }
@@ -72,7 +73,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           <Label htmlFor="password">Password</Label>
           <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)} />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="text-red-500 text-sm">{error}</p>} {/* Show error if present */}
         <Button type="submit" className="w-full">
           {isRegistering ? "Sign up" : "Login"}
         </Button>
