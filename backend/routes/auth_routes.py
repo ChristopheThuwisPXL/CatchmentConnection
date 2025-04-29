@@ -48,12 +48,6 @@ def register_auth_routes(app):
             "role": response.user.role
         }
 
-        # Store session data in cookies for persistence across requests
-        session.permanent = True  # Make session permanent
-        session['user_id'] = response.user.id
-        session['access_token'] = response.session.access_token
-        session['refresh_token'] = response.session.refresh_token
-
         return jsonify({
             "user": user_data,
             "access_token": response.session.access_token,

@@ -1,9 +1,4 @@
-from gotrue.errors import AuthApiError, AuthWeakPasswordError
 from repository.supabase_client import supabase
-
-from gotrue.errors import AuthApiError, AuthWeakPasswordError
-from httpx import HTTPStatusError
-from repository.supabase_client import supabase  # wherever you initialize it
 
 def signup_user(email, password):
     if not email or not password:
@@ -11,19 +6,15 @@ def signup_user(email, password):
 
     try:
         response = supabase.auth.sign_up({"email": email, "password": password})
+        if response.user:
+            supabase.table("Profiles").insert({
+                "id": response.user.id,
+                "email": response.user.email,
+                "name": None,
+                "avatar_url": None
+            }).execute()
+
         return {"message": "Signup successful. Check your email."}
-
-    except AuthWeakPasswordError as e:
-        return {"error": "Password must be at least 6 characters."}
-
-    except HTTPStatusError as e:
-        # Handle bad responses from Supabase
-        if e.response.status_code == 422:
-            return {"error": "Invalid input. Possibly a weak password or bad email format."}
-        return {"error": f"HTTP error: {e.response.status_code} - {e.response.text}"}
-
-    except AuthApiError as e:
-        return {"error": str(e)}
 
     except Exception as e:
         return {"error": "Unexpected error: " + str(e)}

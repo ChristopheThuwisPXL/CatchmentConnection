@@ -1,23 +1,34 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
   const [isRegistering, setIsRegistering] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-
+  const { saveUser } = useUser();
   const navigate = useNavigate();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Reset error message before each submission
+    setError("");
 
-    const url = isRegistering ? "http://localhost:5000/signup" : "http://localhost:5000/login"; // Toggle URL
+    const url = isRegistering ? "http://localhost:5000/signup" : "http://localhost:5000/login";
 
     try {
       const response = await fetch(url, {
@@ -35,21 +46,37 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
       }
 
       if (isRegistering) {
-        alert("Signup successful! Please check your inbox and confirm your email.");
-        setEmail(""); // Clear fields on successful signup
+        setShowSuccessDialog(true);
+        setEmail("");
         setPassword("");
         return;
       }
 
-      // Store tokens in localStorage for session management
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
 
-      alert("Logged in successfully!");
-      navigate("/dashboard"); // Redirect to dashboard upon success
+      const userResponse = await fetch("http://localhost:5000/user", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) {
+        throw new Error("Failed to fetch user profile.");
+      }
+
+      const userData = await userResponse.json();
+      saveUser({
+        name: userData.name || "",
+        email: userData.email || "",
+        avatar: ""
+      });
+      navigate("/dashboard");
+
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message); // Display the error message
+        setError(err.message);
       } else {
         setError("An unexpected error occurred.");
       }
@@ -73,7 +100,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           <Label htmlFor="password">Password</Label>
           <Input id="password" type="password" required onChange={(e) => setPassword(e.target.value)} />
         </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>} {/* Show error if present */}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <Button type="submit" className="w-full">
           {isRegistering ? "Sign up" : "Login"}
         </Button>
@@ -84,6 +111,21 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
           {isRegistering ? "Login here" : "Sign up here"}
         </button>
       </div>
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Signup Successful!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Please check your inbox and confirm your email address. After that, you can login!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => setIsRegistering(!isRegistering)}>
+              Go to Login
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </form>
   );
 }

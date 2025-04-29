@@ -1,32 +1,38 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginPage from './pages/Login';
-import { ModeToggle } from './components/mode-toggle'
-import './App.css';
-import Dashboard from './pages/Dashboard';
-import History from './pages/History'
-import Team from './pages/Team'
+import PrivateRoute from './components/private-routes';
+import { ModeToggle } from './components/mode-toggle';
 import { ThemeProvider } from './components/theme-provider';
-import { Github } from './components/ui/github'
-import Account from './pages/account'
+import { Github } from './components/ui/github';
+import './App.css';
+import LoginPage from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import History from './pages/History';
+import Team from './pages/Team';
+import Account from './pages/Account';
 
 function App() {
   return (
     <ThemeProvider>
-    <Router>
-    <div className="app-container">
-    <header className="header flex space-x-2">
-            <Github/>
+      <Router>
+        <div className="app-container">
+          <header className="header flex space-x-2">
+            <Github />
             <ModeToggle />
           </header>
           <Routes>
+            {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="history" element={<History />} />
-            <Route path="team" element={<Team />} />
-            <Route path="account" element={<Account />} />
+
+            {/* Protected Routes */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/history" element={<History />} />
+              <Route path="/team" element={<Team />} />
+              <Route path="/account" element={<Account />} />
+            </Route>
           </Routes>
         </div>
-    </Router>
+      </Router>
     </ThemeProvider>
   );
 }
