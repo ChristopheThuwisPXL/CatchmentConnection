@@ -2,3 +2,4 @@ supabase
 flask
 flask_cors
 dotenv
+dateutil
