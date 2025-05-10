@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import DefaultuserImage from '../assets/Images/default-user-image.png';
 import Christophe from "@/assets/Images/Christophe_Thuwis.jpg"
+import Trent from "@/assets/Images/Trent_Evans.jpg"
 
 const teamMembers = [
   {
@@ -21,7 +22,7 @@ const teamMembers = [
   {
     name: "Trent Evans",
     title: "Software Engineer",
-    imageUrl: DefaultuserImage,
+    imageUrl: Trent,
     linkedIn: "https://www.linkedin.com/in/trent-evans/",
     github: "https://github.com/trenti6",
   }
