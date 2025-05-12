@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { FaLinkedin, FaGithub } from "react-icons/fa";
-import DefaultuserImage from '../assets/Images/default-user-image.png';
+import DefaultuserImage from '../assets/Images/Calvin_Nijenhuis.jpeg';
 import Christophe from "@/assets/Images/Christophe_Thuwis.jpg"
 import Trent from "@/assets/Images/Trent_Evans.jpg"
 
