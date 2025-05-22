@@ -270,19 +270,7 @@ const getUnit = (label: string): string => {
 
       {/* Chart + Dropdown */}
       <div className="relative w-full max-w-full mb-8">
-        <div className="absolute right-4 top-4 z-20 flex items-center space-x-2 bg-white bg-opacity-60 text-gray-900 dark:bg-gray-800 dark:bg-opacity-60 dark:text-gray-100 px-3 py-1 rounded-md shadow">
-          <Calendar className="w-5 h-5 text-gray-700 dark:text-gray-300" />
-          <select
-            value={hoursRange}
-            onChange={(e) => setHoursRange(Number(e.target.value))}
-            className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 px-2 py-1 rounded-md appearance-none focus:outline-none"
-          >
-            <option value={1}>Last 1 Hour</option>
-            <option value={24}>Last 24 Hours</option>
-            <option value={72}>Last 72 Hours</option>
-          </select>
-        </div>
-        <DashboardChart data={chartData} hoursRange={hoursRange} />
+        AI stuff coming soon...
       </div>
     </div>
   );
