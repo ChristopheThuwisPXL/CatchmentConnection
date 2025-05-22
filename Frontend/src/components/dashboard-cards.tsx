@@ -84,23 +84,38 @@ export function SectionCards() {
     pH: 12,
     TDS: 1000,
     Temperature: 30,
+    EC: 150,
   };
 
   const metricColors: Record<string, string> = {
     pH: "#ff7300",
     TDS: "#387908",
     Temperature: "#00c49f",
+    EC: "#8c3c9c",
   };
+
+const getUnit = (label: string): string => {
+  switch (label.toLowerCase()) {
+    case "temperature":
+      return "°C";
+    case "tds":
+      return "ppm";
+    case "ec":
+      return "µS/cm";
+    default:
+      return "";
+  }
+};
+
 
   return (
     <div className="w-full flex flex-col items-center px-2 lg:px-8">
-      {/* Top Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-8">
         {metrics.map(({ label, value }) => {
           const normalizedValue = value / maxValues[label];
           const filteredChartData = chartData.map((d) => ({
             Date: d.Date,
-            value: d[label], // dynamically pick only the current metric
+            value: d[label],
           }));
 
           return (
@@ -137,14 +152,14 @@ export function SectionCards() {
                   <CardContent className="relative !p-0">
                     <ChartContainer
                       config={{ [label]: { label } }}
-                      className="mx-auto w-[160px] aspect-square"
+                      className="mx-auto w-[160px] aspect-square mb-3"
                     >
                       <RadialBarChart
                         data={[{ name: label, value: normalizedValue }]}
                         startAngle={270}
                         endAngle={-90}
-                        innerRadius={60}
-                        outerRadius={80}
+                        innerRadius={90}
+                        outerRadius={70}
                         margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
                       >
                         <PolarGrid gridType="circle" radialLines={false} stroke="none" />
@@ -166,7 +181,8 @@ export function SectionCards() {
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                       <div className="text-2xl font-bold text-foreground">
-                        {value.toFixed(2)}
+                        {value.toFixed(2)}{" "}
+                        <span className="text-sm align-top">{getUnit(label)}</span>
                       </div>
                       <div className="text-sm text-muted-foreground">{label}</div>
                     </div>
@@ -178,7 +194,7 @@ export function SectionCards() {
                 <ResponsiveContainer width="100%" height={200}>
                   <LineChart
                     data={filteredChartData.map((d) => ({
-                      Date: d.Date, // keep ISO for tooltip
+                      Date: d.Date,
                       value: d.value,
                     }))}
                     margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
@@ -219,7 +235,10 @@ export function SectionCards() {
                                   style={{ backgroundColor: p.stroke as string }}
                                 />
                                 <span className="font-medium mr-1">{p.name}</span>
-                                <span className="ml-auto">{(p.value as number).toFixed(2)}</span>
+                                  <span className="ml-auto">
+                                    {(p.value as number).toFixed(2)}{" "}
+                                    {typeof p.name === "string" ? getUnit(p.name) : ""}
+                                  </span>
                               </div>
                             ))}
                           </div>

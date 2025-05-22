@@ -66,6 +66,9 @@ export function SectionCards({ data, previousData }: { data: any[], previousData
               <CardDescription>Average {key}</CardDescription>
               <CardTitle className="text-2xl font-semibold tabular-nums">
                 {current.toFixed(2)}
+                {key === "TDS" && <span className="text-base align-top"> ppm</span>}
+                {key === "Temperature" && <span className="text-base align-top">°C</span>}
+                {key === "EC" && <span className="text-base align-top"> µS/cm</span>}
               </CardTitle>
               <div className="absolute right-4 top-4">
                 <Badge

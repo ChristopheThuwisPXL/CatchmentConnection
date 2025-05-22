@@ -230,9 +230,13 @@ function ChartTooltipContent({
                         {itemConfig?.label || item.name}
                       </span>
                     </div>
-                    {item.value && (
-                      <span className="text-foreground font-mono font-medium tabular-nums">
-                        {item.value.toLocaleString()}
+                      {typeof item.value === "number" && (
+                        <span className="text-foreground font-mono font-medium tabular-nums">
+                          {item.value.toFixed(2)}
+                          {item.name === "Temperature" ? "°C" :
+                          item.name === "TDS" ? " ppm" :
+                          item.name === "EC" ? " µS/cm" :
+                          ""}
                       </span>
                     )}
                   </div>
