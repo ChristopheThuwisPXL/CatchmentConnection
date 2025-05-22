@@ -7,7 +7,7 @@ def fetch_latest_sensor_data():
         response = (
             supabase
             .table("Sensordata")
-            .select("*")  # Include longitude and latitude in the query
+            .select("*")
             .order("Date", desc=True)
             .limit(1)
             .execute()
@@ -17,27 +17,28 @@ def fetch_latest_sensor_data():
             return None
 
         latest = response.data[0]
-        date_str = latest['Date']
+        date_str = latest["Date"]
         date_obj = parser.isoparse(date_str)
 
-        # Ensure UTC timezone awareness on both sides
+        # Ensure timezone-aware datetime
+        if date_obj.tzinfo is None:
+            date_obj = date_obj.replace(tzinfo=timezone.utc)
+
         now = datetime.now(timezone.utc)
         is_offline = now - date_obj > timedelta(minutes=15)
 
-        # Fetch the longitude and latitude values
-        longitude = latest.get("longitude")
-        latitude = latest.get("latitude")
+        print(f"[Sensor Status Check] Now: {now.isoformat()} | Sensor Time: {date_obj.isoformat()} | Offline: {is_offline}")
 
         return {
             "id": latest["id"],
-            "Date": date_obj.isoformat(),   # note uppercase "Date" to match front-end
+            "Date": date_obj.isoformat(),
             "pH": latest.get("pH"),
             "TDS": latest.get("TDS"),
             "Temperature": latest.get("Temperature"),
             "status": "Offline" if is_offline else "Online",
             "location": {
-                "longitude": longitude,
-                "latitude": latitude
+                "longitude": latest.get("longitude"),
+                "latitude": latest.get("latitude"),
             }
         }
 

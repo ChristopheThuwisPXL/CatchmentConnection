@@ -48,20 +48,21 @@ export function SectionCards() {
   const [chartData, setChartData] = useState<SensorData[]>([]);
 
   useEffect(() => {
-    const fetchSensorData = async () => {
-      try {
-        const res = await axios.get<SensorData[]>(
-          `http://localhost:5000/getSensorData?hours=${hoursRange}`
-        );
-        const all = res.data;
-        setSensorData(all[all.length - 1] ?? null);
-        setChartData(all);
-      } catch (err) {
-        console.error("Failed to fetch sensor data:", err);
-      }
-    };
-    fetchSensorData();
-  }, [hoursRange]);
+  const fetchData = async () => {
+    try {
+      const latestRes = await axios.get<SensorData[]>("http://localhost:5000/getSensorData");
+      const latest = latestRes.data[0];
+      setSensorData(latest ?? null);
+
+      const historyRes = await axios.get<SensorData[]>(`http://localhost:5000/getSensorData?hours=${hoursRange}`);
+      setChartData(historyRes.data);
+    } catch (err) {
+      console.error("Failed to fetch sensor data:", err);
+    }
+  };
+  fetchData();
+}, [hoursRange]);
+
 
   if (!sensorData) return <div>Loading...</div>;
 
