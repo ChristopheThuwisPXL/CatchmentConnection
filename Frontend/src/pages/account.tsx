@@ -125,7 +125,7 @@ export default function Account() {
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader showYearPicker={showYearPicker} />
+        <SiteHeader showYearPicker={showYearPicker} showDateTime={false} />
         <div className="flex flex-col gap-6 p-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>

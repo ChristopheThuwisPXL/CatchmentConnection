@@ -32,6 +32,12 @@
   padding: 2em;
 }
 
+@layer utilities {
+  .no-padding {
+    padding: 0 !important;
+  }
+}
+
 .read-the-docs {
   color: #888;
 }

@@ -1,15 +1,10 @@
-
 import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { SectionCards } from "@/components/dashboard-cards";
 
-
-
-
 export default function Dashboard() {
   const showYearPicker = false;
-  
   
   return (
     <SidebarProvider>

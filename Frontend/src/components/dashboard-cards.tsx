@@ -3,13 +3,32 @@ import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardContent,
 } from "@/components/ui/card";
+import {
+  Label,
+  PolarGrid,
+  PolarRadiusAxis,
+  RadialBar,
+  RadialBarChart,
+} from "recharts"
 import { Calendar, CheckCircle2, XCircle } from "lucide-react";
 import { DashboardChart } from "@/components/dashboard-chart";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { PolarAngleAxis } from 'recharts';
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover"
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 
 interface SensorData {
   Date: string;         // ISO UTC from backend
@@ -51,95 +70,193 @@ export function SectionCards() {
     TDS,
     Temperature,
     status,
-    Date: rawDate,
-    location,
-    latitude,
-    longitude,
   } = sensorData;
   const isOnline = status === "Online";
-  const lat = location?.latitude ?? latitude;
-  const lng = location?.longitude ?? longitude;
 
   const metrics = [
     { label: "pH", value: pH },
     { label: "TDS", value: TDS },
     { label: "Temperature", value: Temperature },
+    { label: "EC", value: 0},
   ];
 
+  const maxValues: Record<string, number> = {
+    pH: 12,
+    TDS: 1000,
+    Temperature: 30,
+  };
+
+  const metricColors: Record<string, string> = {
+    pH: "#ff7300",
+    TDS: "#387908",
+    Temperature: "#00c49f",
+  };
+
   return (
-    <div className="w-full flex flex-col items-center px-4 lg:px-8">
+    <div className="w-full flex flex-col items-center px-2 lg:px-8">
       {/* Top Metric Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full mb-8">
-        {metrics.map(({ label, value }) => (
-          <Card key={label} className="shadow-md flex flex-col w-full">
-            <CardHeader className="relative flex-grow">
-              <CardDescription>{label}</CardDescription>
-              <CardTitle className="text-2xl font-semibold tabular-nums">
-                {typeof value === "number" ? value.toFixed(2) : "N/A"}
-              </CardTitle>
-              <div className="absolute right-4 top-4">
-                <Badge
-                  variant="outline"
-                  className={`flex gap-1 items-center rounded-lg text-xs ${
-                    isOnline
-                      ? "border-green-500 text-green-500"
-                      : "border-red-500 text-red-500"
-                  }`}
-                >
-                  {isOnline ? (
-                    <>
-                      <CheckCircle2 className="w-4 h-4" /> Online
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="w-4 h-4" /> Offline
-                    </>
-                  )}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardFooter className="flex flex-col items-start text-sm">
-              <div className="text-muted-foreground mb-1">
-                Last updated
-              </div>
-              <div className="text-sm font-mono flex items-center">
-                <span>{new Date(rawDate).toISOString().split("T")[0]}</span>
-                <span className="mx-2 text-gray-400">|</span>
-                <span>
-                  {new Date(rawDate)
-                    .toISOString()
-                    .split("T")[1]
-                    .replace("Z", "")}
-                </span>
-                <span className="ml-1 text-xs uppercase text-gray-400">
-                  UTC
-                </span>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-8">
+        {metrics.map(({ label, value }) => {
+          const normalizedValue = value / maxValues[label];
+          const filteredChartData = chartData.map((d) => ({
+            Date: d.Date,
+            value: d[label], // dynamically pick only the current metric
+          }));
+
+          return (
+            <Popover key={label}>
+              <PopoverTrigger asChild>
+                <Card   className="
+                        shadow-xs w-full no-padding cursor-pointer
+                        transition-transform duration-200
+                        hover:scale-[1.05] hover:shadow-md
+                      ">
+                  <div className="relative">
+                    <div className="absolute right-4 top-4">
+                      <Badge
+                        variant="outline"
+                        className={`flex gap-1 rounded-lg text-xs ${
+                          isOnline
+                            ? "border-green-500 text-green-500"
+                            : "border-red-500 text-red-500"
+                        }`}
+                      >
+                        {isOnline ? (
+                          <>
+                            <CheckCircle2 className="w-4 h-4" /> Online
+                          </>
+                        ) : (
+                          <>
+                            <XCircle className="w-4 h-4" /> Offline
+                          </>
+                        )}
+                      </Badge>
+                    </div>
+                  </div>
+
+                  <CardContent className="relative !p-0">
+                    <ChartContainer
+                      config={{ [label]: { label } }}
+                      className="mx-auto w-[160px] aspect-square"
+                    >
+                      <RadialBarChart
+                        data={[{ name: label, value: normalizedValue }]}
+                        startAngle={270}
+                        endAngle={-90}
+                        innerRadius={60}
+                        outerRadius={80}
+                        margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
+                      >
+                        <PolarGrid gridType="circle" radialLines={false} stroke="none" />
+                        <PolarAngleAxis
+                          type="number"
+                          domain={[0, 1]}
+                          angleAxisId={0}
+                          tick={false}
+                        />
+                        <RadialBar
+                          dataKey="value"
+                          angleAxisId={0}
+                          background
+                          fill={metricColors[label]}
+                          cornerRadius={10}
+                        />
+                      </RadialBarChart>
+                    </ChartContainer>
+
+                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                      <div className="text-2xl font-bold text-foreground">
+                        {value.toFixed(2)}
+                      </div>
+                      <div className="text-sm text-muted-foreground">{label}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-120">
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart
+                    data={filteredChartData.map((d) => ({
+                      Date: d.Date, // keep ISO for tooltip
+                      value: d.value,
+                    }))}
+                    margin={{ top: 10, right: 20, bottom: 10, left: 0 }}
+                  >
+                    <XAxis
+                      dataKey="Date"
+                      tickFormatter={(d) =>
+                        new Date(d).toLocaleTimeString("en-US", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      }
+                      tick={{ fontSize: 10 }}
+                    />
+                    <YAxis domain={["auto", "auto"]} />
+                    <Tooltip
+                      content={({ active, payload, label }) => {
+                        if (!active || !payload?.length) return null;
+
+                        return (
+                          <div className="bg-gray-900 text-gray-100 p-3 rounded-md shadow-lg min-w-[160px]">
+                            <div className="text-xs text-gray-300 mb-1">
+                              {new Date(label as string).toLocaleString("en-US", {
+                                year: "numeric",
+                                month: "2-digit",
+                                day: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })}
+                            </div>
+                            {payload.map((p) => (
+                              <div
+                                key={p.dataKey as string}
+                                className="flex items-center text-sm mb-1"
+                              >
+                                <span
+                                  className="inline-block w-3 h-3 rounded-sm mr-2"
+                                  style={{ backgroundColor: p.stroke as string }}
+                                />
+                                <span className="font-medium mr-1">{p.name}</span>
+                                <span className="ml-auto">{(p.value as number).toFixed(2)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="value"
+                      stroke={metricColors[label] || "#8884d8"}
+                      strokeWidth={2}
+                      dot={false}
+                      isAnimationActive={false}
+                      name={label}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+
+                <div className="mt-2 text-sm text-muted-foreground text-center">
+                  {label} trend (last 72h)
+                </div>
+              </PopoverContent>
+            </Popover>
+          
+        );
+      })}
       </div>
+
 
       {/* Chart + Dropdown */}
       <div className="relative w-full max-w-full mb-8">
-        <div
-          className="
-            absolute right-4 top-4 z-20 flex items-center space-x-2
-            bg-white bg-opacity-60 text-gray-900
-            dark:bg-gray-800 dark:bg-opacity-60 dark:text-gray-100
-            px-3 py-1 rounded-md shadow
-          "
-        >
+        <div className="absolute right-4 top-4 z-20 flex items-center space-x-2 bg-white bg-opacity-60 text-gray-900 dark:bg-gray-800 dark:bg-opacity-60 dark:text-gray-100 px-3 py-1 rounded-md shadow">
           <Calendar className="w-5 h-5 text-gray-700 dark:text-gray-300" />
           <select
             value={hoursRange}
             onChange={(e) => setHoursRange(Number(e.target.value))}
-            className="
-              bg-white text-gray-900
-              dark:bg-gray-800 dark:text-gray-100
-              px-2 py-1 rounded-md
-              appearance-none focus:outline-none
-            "
+            className="bg-white text-gray-900 dark:bg-gray-800 dark:text-gray-100 px-2 py-1 rounded-md appearance-none focus:outline-none"
           >
             <option value={1}>Last 1 Hour</option>
             <option value={24}>Last 24 Hours</option>
@@ -148,33 +265,7 @@ export function SectionCards() {
         </div>
         <DashboardChart data={chartData} hoursRange={hoursRange} />
       </div>
-
-      {/* Bottom Summary */}
-      <Card className="shadow-md w-full mb-8">
-        <CardHeader className="px-6 py-4 border-b">
-          <CardTitle>Summary of Sensor Data</CardTitle>
-          <CardDescription>Quick overview of location &amp; timestamp</CardDescription>
-        </CardHeader>
-
-        <CardFooter className="flex flex-wrap items-center gap-6 text-sm px-6 py-4">
-          <div>
-            <span className="font-semibold">Latitude:</span>
-            <span className="ml-2 text-gray-300">{lat ?? "N/A"}</span>
-          </div>
-          <div>
-            <span className="font-semibold">Longitude:</span>
-            <span className="ml-2 text-gray-300">{lng ?? "N/A"}</span>
-          </div>
-          <div>
-            <span className="font-semibold">
-              Last updated (UTC):
-            </span>
-            <span className="ml-2 text-gray-300">
-              {new Date(rawDate).toISOString().replace("Z", " UTC")}
-            </span>
-          </div>
-        </CardFooter>
-      </Card>
-  </div>
+    </div>
   );
 }
+

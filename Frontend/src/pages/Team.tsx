@@ -10,7 +10,7 @@ export default function Dashboard() {
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-      <SiteHeader showYearPicker={showYearPicker} />
+      <SiteHeader showYearPicker={showYearPicker} showDateTime={false} />
           <TeamLayout />
       </SidebarInset>
     </SidebarProvider>

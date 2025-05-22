@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -36,6 +37,10 @@
   --sidebar-accent-foreground: oklch(0.21 0.034 264.665);
   --sidebar-border: oklch(0.928 0.006 264.531);
   --sidebar-ring: oklch(0.707 0.022 261.325);
+}
+
+.no-padding {
+  padding: 0 !important;
 }
 
 .dark {
