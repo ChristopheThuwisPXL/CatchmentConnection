@@ -25,7 +25,7 @@ def fetch_latest_sensor_data():
             date_obj = date_obj.replace(tzinfo=timezone.utc)
 
         now = datetime.now(timezone.utc)
-        is_offline = now - date_obj > timedelta(minutes=15)
+        is_offline = now - date_obj > timedelta(minutes=21)
 
         print(f"[Sensor Status Check] Now: {now.isoformat()} | Sensor Time: {date_obj.isoformat()} | Offline: {is_offline}")
 
