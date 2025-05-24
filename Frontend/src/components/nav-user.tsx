@@ -41,6 +41,10 @@ export function NavUser() {
   const handleAccount = () => {
     navigate("/account");
   };
+
+  const handleNotifications = () => {
+    navigate("/notification");
+  };
   
   if (!user) {
     return null;
@@ -98,7 +102,7 @@ export function NavUser() {
                 <UserCircle />
                 Account
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={handleNotifications}>
                 <Bell />
                 Notifications
               </DropdownMenuItem>

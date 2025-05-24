@@ -5,6 +5,7 @@ from routes.history_routes import register_history_routes
 from routes.user_routes import register_user_routes
 from routes.dashbaord_route import register_sensor_routes
 from config import Config
+from routes.notifications import getNotis
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -15,6 +16,7 @@ register_auth_routes(app)
 register_history_routes(app)
 register_user_routes(app)
 register_sensor_routes(app)
+getNotis(app)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
