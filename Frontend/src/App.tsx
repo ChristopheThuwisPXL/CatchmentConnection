@@ -5,10 +5,11 @@ import { ThemeProvider } from './components/theme-provider';
 import { Github } from './components/ui/github';
 import './App.css';
 import LoginPage from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import History from './pages/History';
 import Team from './pages/Team';
-import Account from './pages/Account';
+import Account from './pages/account';
+import NotificationPage from './pages/notification';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
               <Route path="/history" element={<History />} />
               <Route path="/team" element={<Team />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/notification" element={<NotificationPage />} />
             </Route>
           </Routes>
         </div>
