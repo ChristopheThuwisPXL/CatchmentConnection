@@ -6,15 +6,12 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import {
-  Label,
   PolarGrid,
-  PolarRadiusAxis,
   RadialBar,
   RadialBarChart,
 } from "recharts"
-import { Calendar, CheckCircle2, XCircle } from "lucide-react";
-import { DashboardChart } from "@/components/dashboard-chart";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { CheckCircle2, XCircle } from "lucide-react";
+import { ChartContainer } from "@/components/ui/chart"
 import { PolarAngleAxis } from 'recharts';
 import {
   Popover,
@@ -31,7 +28,7 @@ import {
 } from 'recharts';
 
 interface SensorData {
-  Date: string;         // ISO UTC from backend
+  Date: string;
   pH: number;
   TDS: number;
   Temperature: number;
@@ -70,29 +67,30 @@ export function SectionCards() {
     pH,
     TDS,
     Temperature,
+    EC,
     status,
   } = sensorData;
   const isOnline = status === "Online";
 
-  const metrics = [
-    { label: "pH", value: pH },
-    { label: "TDS", value: TDS },
-    { label: "Temperature", value: Temperature },
-    { label: "EC", value: 0},
-  ];
+const metrics = [
+  { label: "pH", value: pH },
+  { label: "TDS", value: TDS },
+  { label: "Temperature", value: Temperature },
+  { label: "EC", value: EC },
+]
 
   const maxValues: Record<string, number> = {
     pH: 12,
-    TDS: 1000,
+    TDS: 190,
     Temperature: 30,
-    EC: 150,
+    EC: 500,
   };
 
   const metricColors: Record<string, string> = {
-    pH: "#ff7300",
-    TDS: "#387908",
-    Temperature: "#00c49f",
-    EC: "#8c3c9c",
+    pH: "#1e3a8a",
+    TDS: "#1e3a8a",
+    Temperature: "#1e3a8a",
+    EC: "#1e3a8a",
   };
 
 const getUnit = (label: string): string => {
@@ -111,7 +109,7 @@ const getUnit = (label: string): string => {
 
   return (
     <div className="w-full flex flex-col items-center px-2 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
         {metrics.map(({ label, value }) => {
           const normalizedValue = value / maxValues[label];
           const filteredChartData = chartData.map((d) => ({
@@ -155,34 +153,33 @@ const getUnit = (label: string): string => {
                       config={{ [label]: { label } }}
                       className="mx-auto w-[160px] aspect-square mb-3"
                     >
-                      <RadialBarChart
-                        data={[{ name: label, value: normalizedValue }]}
-                        startAngle={270}
-                        endAngle={-90}
-                        innerRadius={90}
-                        outerRadius={70}
-                        margin={{ top: 0, bottom: 0, left: 0, right: 0 }}
-                      >
-                        <PolarGrid gridType="circle" radialLines={false} stroke="none" />
-                        <PolarAngleAxis
-                          type="number"
-                          domain={[0, 1]}
-                          angleAxisId={0}
-                          tick={false}
-                        />
-                        <RadialBar
-                          dataKey="value"
-                          angleAxisId={0}
-                          background
-                          fill={metricColors[label]}
-                          cornerRadius={10}
-                        />
-                      </RadialBarChart>
+                    <RadialBarChart
+                      data={[{ name: label, value: normalizedValue }]}
+                      startAngle={270}
+                      endAngle={-90}
+                      innerRadius={70}
+                      outerRadius={90}
+                      barSize={15}
+                    >
+                      <PolarGrid radialLines={false} />
+                      <PolarAngleAxis
+                        type="number"
+                        domain={[0, 1]}
+                        angleAxisId={0}
+                        tick={false}
+                      />
+                      <RadialBar
+                        dataKey="value"
+                        fill={metricColors[label]}
+                        background={{ fill: "#ffffff", stroke: "none" }}
+                        cornerRadius={7.5}
+                      />
+                    </RadialBarChart>
                     </ChartContainer>
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                       <div className="text-2xl font-bold text-foreground">
-                        {value.toFixed(2)}{" "}
+                        {typeof value === "number" ? value.toFixed(2) : "--"}{" "}
                         <span className="text-sm align-top">{getUnit(label)}</span>
                       </div>
                       <div className="text-sm text-muted-foreground">{label}</div>
@@ -266,12 +263,6 @@ const getUnit = (label: string): string => {
           
         );
       })}
-      </div>
-
-
-      {/* Chart + Dropdown */}
-      <div className="relative w-full max-w-full mb-8">
-        AI stuff coming soon...
       </div>
     </div>
   );

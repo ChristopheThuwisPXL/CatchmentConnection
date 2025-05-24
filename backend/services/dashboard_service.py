@@ -20,12 +20,11 @@ def fetch_latest_sensor_data():
         date_str = latest["Date"]
         date_obj = parser.isoparse(date_str)
 
-        # Ensure timezone-aware datetime
         if date_obj.tzinfo is None:
             date_obj = date_obj.replace(tzinfo=timezone.utc)
 
         now = datetime.now(timezone.utc)
-        is_offline = now - date_obj > timedelta(minutes=15)
+        is_offline = now - date_obj > timedelta(minutes=21)
 
         print(f"[Sensor Status Check] Now: {now.isoformat()} | Sensor Time: {date_obj.isoformat()} | Offline: {is_offline}")
 
@@ -35,6 +34,7 @@ def fetch_latest_sensor_data():
             "pH": latest.get("pH"),
             "TDS": latest.get("TDS"),
             "Temperature": latest.get("Temperature"),
+            "EC": latest.get("EC"),
             "status": "Offline" if is_offline else "Online",
             "location": {
                 "longitude": latest.get("longitude"),
@@ -80,6 +80,7 @@ def fetch_sensor_history(hours: int):
             "pH":           row.get("pH"),
             "TDS":          row.get("TDS"),
             "Temperature":  row.get("Temperature"),
+            "EC":           row.get("EC"),
             "status":       "Online",             # assume online for historical
             "location": {
                 "longitude": row.get("longitude"),
@@ -87,3 +88,43 @@ def fetch_sensor_history(hours: int):
             }
         })
     return out
+
+def fetch_combined_history(days: int = 30):
+    now = datetime.now(timezone.utc)
+    cutoff = now - timedelta(days=days)
+
+    all_rows = []
+    batch_size = 1000
+    offset = 0
+
+    while True:
+        resp = (
+            supabase
+            .table("Sensordata")
+            .select("*")
+            .gte("Date", cutoff)
+            .lte("Date", now)
+            .order("Date", desc=False)
+            .range(offset, offset + batch_size - 1)
+            .execute()
+        )
+
+        data = resp.data or []
+        all_rows.extend(data)
+
+        if len(data) < batch_size:
+            break
+        offset += batch_size
+
+    return [
+        {
+            "ds": parser.isoparse(row["Date"]).isoformat(),
+            "pH": row.get("pH"),
+            "TDS": row.get("TDS"),
+            "Temperature": row.get("Temperature"),
+            "EC": row.get("EC")
+        }
+        for row in all_rows
+    ]
+
+

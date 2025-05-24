@@ -1,8 +1,5 @@
 from flask import Blueprint, jsonify, request
-from services.dashboard_service import (
-    fetch_latest_sensor_data,
-    fetch_sensor_history,
-)
+from services.dashboard_service import fetch_latest_sensor_data, fetch_sensor_history
 
 def register_sensor_routes(app):
     sensor_bp = Blueprint("sensor", __name__)

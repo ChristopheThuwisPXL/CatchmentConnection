@@ -56,9 +56,6 @@ export function SectionCards({ data, previousData }: { data: any[], previousData
         const previous = previousAverages[key];
         const change = ((current - previous) / previous) * 100;
         const isTrendingUp = change > 0;
-
-        console.log(`Current value for ${key}:`, current);
-        console.log(`Previous value for ${key}:`, previous);
   
         return (
           <Card key={key} className="shadow-xs">

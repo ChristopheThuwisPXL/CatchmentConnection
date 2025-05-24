@@ -1,5 +1,6 @@
 from repository.supabase_client import supabase
-from datetime import date
+from datetime import timedelta, timezone, date, datetime
+from dateutil import parser
 
 def getMainData(year=None):
     try:
@@ -24,3 +25,6 @@ def getMainData(year=None):
     except Exception as e:
         print(f"Error fetching data from Supabase: {e}")
         return []
+
+
+
