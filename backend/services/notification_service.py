@@ -4,9 +4,9 @@ from repository.supabase_client import supabase
 
 
 thresholds = {
-    "TDS": {"min": 100, "max": 400},
+    "TDS": {"min": 80, "max": 400},
     "Temp": {"min": 10, "max": 30},
-    "pH": {"min": 6.0, "max": 8.5},
+    "pH": {"min": 6.0, "max": 9},
 }
 
 def insert_notification_if_not_exists(message, sensor_name, value, now):
