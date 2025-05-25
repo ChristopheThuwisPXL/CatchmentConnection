@@ -38,7 +38,7 @@ Catchment Connection is a full-stack web platform for real-time and historical w
 - Anomaly Detection: Isolation Forest model detects outliers in a line chart.
 - Interactive Map: Leaflet map showing current GPS position of the sensors.
 
-![image](https://github.com/user-attachments/assets/062b9c1a-7b22-4bed-9394-ba6ccaf3689e)
+![image](https://github.com/user-attachments/assets/72fec524-e21e-4eb1-8d86-5cfb2b96632e)
 
 ### History
 - Explore long-term water quality data going back to the year 2000:
