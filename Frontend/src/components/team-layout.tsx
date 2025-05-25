@@ -23,7 +23,7 @@ const teamMembers = [
     name: "Trent Evans",
     title: "Software Engineer",
     imageUrl: Trent,
-    linkedIn: "https://www.linkedin.com/in/trent-evans/",
+    linkedIn: "https://www.linkedin.com/in/trent-evans-/",
     github: "https://github.com/trenti6",
   }
 ];
