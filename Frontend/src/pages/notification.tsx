@@ -167,7 +167,7 @@ const NotificationPage: React.FC = () => {
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader />
+        <SiteHeader showYearPicker={false} />
         <main className="p-6 max-w-3xl mx-auto">
           <h2 className="text-center text-2xl font-bold mb-6">Notifications</h2>
           {loading ? (

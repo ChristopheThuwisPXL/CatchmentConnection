@@ -50,7 +50,7 @@ export function DashboardChart() {
 
   const phData = useMemo(() => combineActualAndPredictedData("pH", history, forecast), [history, forecast]);
   const tdsData = useMemo(() => combineActualAndPredictedData("TDS", history, forecast), [history, forecast]);
-
+  const temperatureData = useMemo(() => combineActualAndPredictedData("Temperature", history, forecast), [history, forecast]);
 
   if (error) {
     return <div className="text-red-500 font-medium">Error loading dashboard data: {error}</div>;
@@ -94,7 +94,7 @@ export function DashboardChart() {
       <ForecastCard
         title="Temperature Forecast"
         colorKey="Temperature"
-        data={phData}
+        data={temperatureData}
         tooltip={{
           label: "Prophet forecast model",
           content: [

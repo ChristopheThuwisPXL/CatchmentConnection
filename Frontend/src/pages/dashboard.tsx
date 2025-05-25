@@ -19,7 +19,6 @@ export default function Dashboard() {
                <SectionCards/>
                 <DashboardChart/>
                <AnalysisCharts/>
-
             </div>
           </div>
         </div>

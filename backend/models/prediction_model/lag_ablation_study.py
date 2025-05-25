@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import pickle
 import numpy as np
+from sklearn.metrics import mean_absolute_error, r2_score
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 models_dir = os.path.dirname(script_dir)
@@ -19,13 +20,7 @@ best_params = {
     'TDS': {'changepoint_prior_scale': 0.1, 'seasonality_prior_scale': 1.0, 'seasonality_mode': 'additive'}
 }
 
-optimal_lags = {
-    'pH': [216],
-    'TDS': [216],
-    'Temperature': [72]
-}
-
-def train_predict_save(df, target_col, params, lags):
+def train_and_evaluate(df, target_col, params, lags=[]):
     df['hour'] = df['Date'].dt.hour
     df['dayofweek'] = df['Date'].dt.dayofweek
     df['hour_sin'] = np.sin(2 * np.pi * df['hour'] / 24)
@@ -38,8 +33,13 @@ def train_predict_save(df, target_col, params, lags):
 
     df.dropna(inplace=True)
 
+    cutoff = int(len(df) * 0.8)
+    train = df.iloc[:cutoff]
+    test = df.iloc[cutoff:]
+
     cols = ['Date', target_col, 'hour_sin', 'hour_cos', 'dow_sin', 'dow_cos'] + [f'{target_col}_lag_{lag}' for lag in lags]
-    ts = df[cols].rename(columns={'Date': 'ds', target_col: 'y'})
+    ts_train = train[cols].rename(columns={'Date': 'ds', target_col: 'y'})
+    ts_test = test[cols].rename(columns={'Date': 'ds', target_col: 'y'})
 
     model = Prophet(
         daily_seasonality=False,
@@ -59,44 +59,44 @@ def train_predict_save(df, target_col, params, lags):
     for lag in lags:
         model.add_regressor(f'{target_col}_lag_{lag}')
 
-    model.fit(ts)
+    model.fit(ts_train)
+    forecast = model.predict(ts_test)
 
-    future = model.make_future_dataframe(periods=2160, freq='20min')
-    future['hour'] = future['ds'].dt.hour
-    future['dayofweek'] = future['ds'].dt.dayofweek
-    future['hour_sin'] = np.sin(2 * np.pi * future['hour'] / 24)
-    future['hour_cos'] = np.cos(2 * np.pi * future['hour'] / 24)
-    future['dow_sin'] = np.sin(2 * np.pi * future['dayofweek'] / 7)
-    future['dow_cos'] = np.cos(2 * np.pi * future['dayofweek'] / 7)
+    mae = mean_absolute_error(ts_test['y'], forecast['yhat'])
+    r2 = r2_score(ts_test['y'], forecast['yhat'])
 
-    last_known = df.iloc[-1]
-    for lag in lags:
-        future[f'{target_col}_lag_{lag}'] = last_known[f'{target_col}_lag_{lag}']
+    smoothed_actual = ts_test['y'].rolling(window=9, center=True).mean()
+    smoothed_pred = forecast['yhat'].rolling(window=9, center=True).mean()
+    smoothed_mae = mean_absolute_error(smoothed_actual.dropna(), smoothed_pred.dropna())
 
-    forecast = model.predict(future)
+    return mae, smoothed_mae, r2
 
-    model_path = os.path.join(script_dir, f"{target_col.lower()}_prediction_model.pkl")
-    with open(model_path, 'wb') as f:
-        pickle.dump(model, f)
-    print(f" Saved model for {target_col} at {model_path}")
+lag_sets = {
+    "baseline": [],
+    "lag_72": [72],
+    "lag_216": [216],
+    "lag_504": [504], 
+    "combo_72_504": [72, 504],
+    "combo_216_504": [216, 504],
+    "combo_all_long": [72, 216, 504]
+}
+all_results = {}
 
-    plt.figure(figsize=(14, 6))
-    plt.plot(ts['ds'], ts['y'], label='Actual', alpha=0.7)
-    plt.plot(forecast['ds'], forecast['yhat'], label='Predicted', alpha=0.7)
-    plt.xlabel('Date')
-    plt.ylabel(target_col)
-    plt.title(f'{target_col} Forecast with Time + Lag Features ({", ".join([str(l) for l in lags])})')
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+for target in ["pH", "TDS", "Temperature"]:
+    print(f"\n Lag Ablation Study on {target}")
+    results = {}
 
-    return model, forecast
+    for name, lags in lag_sets.items():
+        mae, smoothed_mae, r2 = train_and_evaluate(df.copy(), target_col=target, params=best_params[target], lags=lags)
+        results[name] = {"mae": mae, "smoothed_mae": smoothed_mae, "r2": r2}
+        print(f"{name:<15} | MAE = {mae:.4f} | Smoothed MAE = {smoothed_mae:.4f} | R² = {r2:.4f}")
 
-models = {}
-forecasts = {}
+    all_results[target] = results
 
-for target in ['pH', 'Temperature', 'TDS']:
-    print(f"\n Training model for {target} with lags {optimal_lags[target]} ...")
-    model, forecast = train_predict_save(df.copy(), target, best_params[target], optimal_lags[target])
-    models[target] = model
-    forecasts[target] = forecast
+print("\n Summary of Best Lag Combinations per Metric:")
+for metric in ['mae', 'smoothed_mae', 'r2']:
+    print(f"\n Best by {metric.upper()}:")
+    for target in all_results:
+        best = min(all_results[target].items(), key=lambda x: x[1][metric]) if metric != 'r2' \
+               else max(all_results[target].items(), key=lambda x: x[1][metric])
+        print(f"{target:<12} → {best[0]:<15} ({metric} = {best[1][metric]:.4f})")
