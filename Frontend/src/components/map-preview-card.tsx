@@ -5,23 +5,12 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Info } from "lucide-react"
 import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts"
-import {
   Tooltip as UITooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-// Fix Leaflet marker icon issues
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
@@ -42,11 +31,11 @@ export function MapPreviewCard() {
         if (typeof lat === "number" && typeof lng === "number") {
           setPosition([lat, lng]);
         } else {
-          setPosition([51.505, -0.09]); // fallback
+          setPosition([51.505, -0.09]);
         }
       } catch (err) {
         console.error("Error fetching sensor data:", err);
-        setPosition([51.505, -0.09]); // fallback
+        setPosition([51.505, -0.09]);
       }
     };
 

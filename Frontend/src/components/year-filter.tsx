@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import { CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const years = Array.from({ length: 20 }, (_, i) => new Date().getFullYear() - i);
-
 export default function YearPicker({ onSelect }: { onSelect: (year: number) => void }) {
   const [selectedYear, setSelectedYear] = React.useState<number>();
   const [open, setOpen] = React.useState(false);

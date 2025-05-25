@@ -119,13 +119,11 @@ export default function Account() {
     }
   };
 
-  const showYearPicker = false;
-
   return (
     <SidebarProvider>
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader/>
+        <SiteHeader showYearPicker/>
         <div className="flex flex-col gap-6 p-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Account Settings</h1>
@@ -158,6 +156,11 @@ export default function Account() {
             />
             <AccountDangerZone onDeleteAccount={handleAccountDeletion} />
           </div>
+          {error && (
+            <div className="text-red-600 text-sm">
+              {error}
+            </div>
+          )}
           
         </div>
       </SidebarInset>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -40,7 +40,7 @@ interface SensorData {
 }
 
 export function SectionCards() {
-  const [hoursRange, setHoursRange] = useState<number>(72);
+  const [hoursRange] = useState<number>(72);
   const [sensorData, setSensorData] = useState<SensorData | null>(null);
   const [chartData, setChartData] = useState<SensorData[]>([]);
 
