@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Bell, CheckCircle, AlertTriangle } from "lucide-react";
+import { Bell, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import clsx from "clsx";
@@ -20,6 +20,7 @@ interface Notification {
   type: NotificationType;
   timestamp: string;
   read: boolean;
+  Value: number;
 }
 
 // ----------------------
@@ -64,6 +65,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               {notification.message}
             </h4>
             <p className="text-base text-gray-700 mb-3">{notification.title}</p>
+            <p className="text-base text-gray-700 mb-3">Value: {notification.Value}</p>
             <p className="text-sm text-gray-500">
               {new Date(notification.timestamp).toLocaleString()}
             </p>
@@ -117,7 +119,8 @@ const NotificationPage: React.FC = () => {
           message: item.Message,
           type: inferType(item.Message, item.Value),
           timestamp: item.Date,
-          read: false, // Default read status (no backend persistence here)
+          read: item.read ?? false, // read from backend DB (default false if missing)
+          Value: item.Value,
         }));
 
         setNotifications(mappedNotifications);
@@ -132,12 +135,32 @@ const NotificationPage: React.FC = () => {
     fetchNotifications();
   }, []);
 
-  const handleMarkRead = (id: number): void => {
-    setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
-    );
+  // New: Async mark read function that updates backend and UI
+  const handleMarkRead = async (id: number): Promise<void> => {
+    try {
+      const res = await fetch("http://127.0.0.1:5000/notifications/read", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error: ${res.status}`);
+      }
+
+      const data = await res.json();
+      console.log(data.message);
+
+      setNotifications((prev) =>
+        prev.map((notif) =>
+          notif.id === id ? { ...notif, read: true } : notif
+        )
+      );
+    } catch (error) {
+      console.error("Failed to mark notification as read:", error);
+    }
   };
 
   return (
