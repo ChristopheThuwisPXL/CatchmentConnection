@@ -5,7 +5,7 @@ import { ThemeProvider } from './components/theme-provider';
 import { Github } from './components/ui/github';
 import './App.css';
 import LoginPage from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/dashboard';
 import History from './pages/History';
 import Team from './pages/Team';
 import Account from './pages/account';
