@@ -11,10 +11,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
+  iconUrl: "/marker-icon.png",
+  shadowUrl: "/marker-shadow.png",
 });
 
 export function MapPreviewCard() {
